@@ -67,18 +67,43 @@ export class MetaSenderComponent implements OnInit {
 
     this.setStatus("Initiating transaction... (please wait)");
 
-    this.coinInstance.transfer(receiver, amount, { from: this.model.account }).then((success) => {
-      if (!success) {
-        this.setStatus("Transaction failed!");
-      }
-      else {
-        this.setStatus("Transaction complete!");
-        this.refreshBalance();
-      }
-    }).catch((e) => {
-      console.log(e);
-      this.setStatus("Error sending coin; see log.");
-    });
+    var token = this.web3Service.StandardToken;    
+    var ContractInstance = new this.web3Service.web3.eth.Contract(token.abi, this.coinInstance.address);
+    const _this = this;
+
+    ContractInstance.methods.transfer(receiver, amount).send({from:this.model.account})
+            .on('transactionHash', function (hash) {
+            console.log(hash);
+        })
+            .on('receipt', function (receipt) {
+            console.log(receipt);
+            _this.setStatus("Transaction complete!");
+            _this.refreshBalance();
+        })
+            .on('confirmation', function (confirmationNumber, receipt) {
+            console.log(confirmationNumber);
+            console.log(receipt);
+        })
+            .on('error', function (e) {
+              console.log(e);
+              _this.setStatus("Error getting balance; see log.");
+        });
+
+        /*
+        // Old style
+        this.coinInstance.transfer(receiver, amount, { from: this.model.account }).then((success) => {
+          if (!success) {
+            this.setStatus("Transaction failed!");
+          }
+          else {
+            this.setStatus("Transaction complete!");
+            this.refreshBalance();
+          }
+        }).catch((e) => {
+          console.log(e);
+          this.setStatus("Error sending coin; see log.");
+        });
+        */
 
   };
 
