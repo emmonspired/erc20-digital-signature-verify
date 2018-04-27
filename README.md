@@ -18,7 +18,9 @@ Authentication / Verification
 Wallet Injection in the Browser
 1) Connect to Web3 via MetaMask's injected WebProvider
 2) Display Wallet Account
-3) Send StandardToken (ERC20 compliant) from Account to another Account address
+3a) Send StandardToken (ERC20 compliant) from Account to another Account address
+or
+3b) Approve StandardToken (ERC20 compliant) allowance from Account to another address.
 ```
 
 ## Overview
