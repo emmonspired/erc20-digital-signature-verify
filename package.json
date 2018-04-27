@@ -32,7 +32,8 @@
     "jquery": "^3.2.1",
     "rxjs": "^5.4.3",
     "zone.js": "^0.8.17",
-    "hoek": "^5.0.3"
+    "hoek": "^5.0.3",
+    "moment": "^2.19.3"
   },
   "devDependencies": {
     "@angular/cli": "^1.4.1",
