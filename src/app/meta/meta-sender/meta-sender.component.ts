@@ -107,6 +107,44 @@ export class MetaSenderComponent implements OnInit {
 
   };
 
+	approve() {
+		if (!this.coinInstance) {
+			this.setStatus("coinInstance is not loaded, unable to send transaction");
+			return;
+		}
+
+		console.log("Approving coins" + this.model.amount + " to " + this.model.receiver);
+
+
+		let amount = this.web3.utils.toWei( this.model.amount, 'ether' );
+		let receiver = this.model.receiver;
+
+		this.setStatus("Initiating transaction... (please wait)");
+
+		var token = this.web3Service.StandardToken;
+		var ContractInstance = new this.web3Service.web3.eth.Contract(token.abi, this.coinInstance.address);
+		const _this = this;
+
+		ContractInstance.methods.approve(receiver, amount).send({from:this.model.account})
+			.on('transactionHash', function (hash) {
+				console.log(hash);
+			})
+			.on('receipt', function (receipt) {
+				console.log(receipt);
+				_this.setStatus("Transaction complete!");
+				_this.refreshBalance();
+			})
+			.on('confirmation', function (confirmationNumber, receipt) {
+				console.log(confirmationNumber);
+				console.log(receipt);
+			})
+			.on('error', function (e) {
+				console.log(e);
+				_this.setStatus("Error getting balance; see log.");
+			});
+
+	};
+
   refreshBalance() {
     console.log("Refreshing balance");
         
